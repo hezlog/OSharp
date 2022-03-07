@@ -12,10 +12,10 @@ namespace Liuliu.Demo.Web.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    TypeName = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    TypeName = table.Column<string>(maxLength: 500, nullable: false),
                     AuditEnabled = table.Column<bool>(nullable: false),
-                    PropertyJson = table.Column<string>(nullable: false)
+                    PropertyJson = table.Column<string>(maxLength: 5000, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,10 +27,10 @@ namespace Liuliu.Demo.Web.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Area = table.Column<string>(nullable: true),
-                    Controller = table.Column<string>(nullable: true),
-                    Action = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 200, nullable: true),
+                    Area = table.Column<string>(maxLength: 200, nullable: true),
+                    Controller = table.Column<string>(maxLength: 200, nullable: true),
+                    Action = table.Column<string>(maxLength: 200, nullable: true),
                     IsController = table.Column<bool>(nullable: false),
                     IsAjax = table.Column<bool>(nullable: false),
                     AccessType = table.Column<int>(nullable: false),
@@ -39,6 +39,7 @@ namespace Liuliu.Demo.Web.Migrations
                     AuditEntityEnabled = table.Column<bool>(nullable: false),
                     CacheExpirationSeconds = table.Column<int>(nullable: false),
                     IsCacheSliding = table.Column<bool>(nullable: false),
+                    IsSlaveDatabase = table.Column<bool>(nullable: false),
                     IsLocked = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -52,11 +53,11 @@ namespace Liuliu.Demo.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    Remark = table.Column<string>(nullable: true),
-                    Code = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    Remark = table.Column<string>(maxLength: 500, nullable: true),
+                    Code = table.Column<string>(maxLength: 200, nullable: false),
                     OrderCode = table.Column<double>(nullable: false),
-                    TreePathString = table.Column<string>(nullable: true),
+                    TreePathString = table.Column<string>(maxLength: 2000, nullable: true),
                     ParentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -119,9 +120,12 @@ namespace Liuliu.Demo.Web.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    ValueJson = table.Column<string>(nullable: true),
-                    ValueType = table.Column<string>(nullable: true),
-                    Key = table.Column<string>(nullable: false),
+                    Key = table.Column<string>(maxLength: 512, nullable: false),
+                    ValueJson = table.Column<string>(type: "text", nullable: true),
+                    ValueType = table.Column<string>(maxLength: 1000, nullable: true),
+                    Display = table.Column<string>(maxLength: 100, nullable: true),
+                    Remark = table.Column<string>(maxLength: 1000, nullable: true),
+                    Order = table.Column<int>(nullable: false),
                     IsLocked = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -207,7 +211,7 @@ namespace Liuliu.Demo.Web.Migrations
                     RoleId = table.Column<int>(nullable: false),
                     EntityId = table.Column<Guid>(nullable: false),
                     Operation = table.Column<int>(nullable: false),
-                    FilterGroupJson = table.Column<string>(nullable: true),
+                    FilterGroupJson = table.Column<string>(maxLength: 5000, nullable: true),
                     IsLocked = table.Column<bool>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)
                 },
@@ -229,7 +233,7 @@ namespace Liuliu.Demo.Web.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     EntityId = table.Column<Guid>(nullable: false),
-                    FilterGroupJson = table.Column<string>(nullable: true),
+                    FilterGroupJson = table.Column<string>(maxLength: 5000, nullable: true),
                     IsLocked = table.Column<bool>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)
                 },
@@ -290,8 +294,8 @@ namespace Liuliu.Demo.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimType = table.Column<string>(maxLength: 500, nullable: true),
+                    ClaimValue = table.Column<string>(maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -337,8 +341,8 @@ namespace Liuliu.Demo.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: false),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimType = table.Column<string>(maxLength: 500, nullable: false),
+                    ClaimValue = table.Column<string>(maxLength: 1000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -364,10 +368,10 @@ namespace Liuliu.Demo.Web.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: true),
-                    ProviderKey = table.Column<string>(nullable: true),
-                    ProviderDisplayName = table.Column<string>(nullable: true),
-                    Avatar = table.Column<string>(nullable: true),
+                    LoginProvider = table.Column<string>(maxLength: 200, nullable: true),
+                    ProviderKey = table.Column<string>(maxLength: 500, nullable: true),
+                    ProviderDisplayName = table.Column<string>(maxLength: 200, nullable: true),
+                    Avatar = table.Column<string>(maxLength: 1000, nullable: true),
                     UserId = table.Column<int>(nullable: false),
                     CreatedTime = table.Column<DateTime>(nullable: false)
                 },
@@ -382,9 +386,9 @@ namespace Liuliu.Demo.Web.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true)
+                    LoginProvider = table.Column<string>(maxLength: 200, nullable: true),
+                    Name = table.Column<string>(maxLength: 200, nullable: true),
+                    Value = table.Column<string>(maxLength: 2000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -420,10 +424,10 @@ namespace Liuliu.Demo.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: false),
-                    NormalizedName = table.Column<string>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    Remark = table.Column<string>(maxLength: 512, nullable: true),
+                    Name = table.Column<string>(maxLength: 200, nullable: false),
+                    NormalizedName = table.Column<string>(maxLength: 200, nullable: false),
+                    ConcurrencyStamp = table.Column<string>(maxLength: 200, nullable: true),
+                    Remark = table.Column<string>(maxLength: 500, nullable: true),
                     IsAdmin = table.Column<bool>(nullable: false),
                     IsDefault = table.Column<bool>(nullable: false),
                     IsSystem = table.Column<bool>(nullable: false),
@@ -449,17 +453,17 @@ namespace Liuliu.Demo.Web.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(nullable: false),
-                    NormalizedUserName = table.Column<string>(nullable: false),
-                    NickName = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    NormalizeEmail = table.Column<string>(nullable: true),
+                    UserName = table.Column<string>(maxLength: 200, nullable: false),
+                    NormalizedUserName = table.Column<string>(maxLength: 200, nullable: false),
+                    NickName = table.Column<string>(maxLength: 200, nullable: true),
+                    Email = table.Column<string>(maxLength: 200, nullable: true),
+                    NormalizeEmail = table.Column<string>(maxLength: 200, nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    HeadImg = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
+                    PasswordHash = table.Column<string>(maxLength: 500, nullable: true),
+                    HeadImg = table.Column<string>(maxLength: 1000, nullable: true),
+                    SecurityStamp = table.Column<string>(maxLength: 500, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(maxLength: 500, nullable: true),
+                    PhoneNumber = table.Column<string>(maxLength: 50, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
@@ -757,6 +761,12 @@ namespace Liuliu.Demo.Web.Migrations
                 name: "IX_Systems_AuditProperty_AuditEntityId",
                 table: "Systems_AuditProperty",
                 column: "AuditEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "KeyIndex",
+                table: "Systems_KeyValue",
+                column: "Key",
+                unique: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Auth_EntityRole_Identity_Role_RoleId",

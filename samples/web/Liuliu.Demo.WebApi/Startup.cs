@@ -47,12 +47,13 @@ namespace Liuliu.Demo.Web
                 .AddPack<EndpointsPack>()
                 .AddPack<MiniProfilerPack>()
                 .AddPack<SwaggerPack>()
-                .AddPack<RedisPack>()
+                //.AddPack<RedisPack>()
                 .AddPack<SystemsPack>()
                 .AddPack<AuthenticationPack>()
                 .AddPack<FunctionAuthorizationPack>()
                 .AddPack<DataAuthorizationPack>()
-                .AddPack<MySqlDefaultDbContextMigrationPack>()
+                //.AddPack<MySqlDefaultDbContextMigrationPack>()
+                .AddPack<SqlServerDefaultDbContextMigrationPack>()
                 .AddPack<AuditPack>()
                 .AddPack<InfosPack>();
         }
