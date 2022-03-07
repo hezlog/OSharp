@@ -1,10 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="../../../build/public.props" />
   <Import Project="../../../build/version.props" />
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework Condition=" '17.0' > '$(MSBuildVersion)' ">net5.0</TargetFramework>
+    <TargetFramework Condition=" '$(MSBuildVersion)' >= '17.0' ">net6.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 

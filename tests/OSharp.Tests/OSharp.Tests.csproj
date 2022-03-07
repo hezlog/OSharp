@@ -1,7 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework Condition=" '17.0' > '$(MSBuildVersion)' ">net5.0</TargetFramework>
+    <TargetFramework Condition=" '$(MSBuildVersion)' >= '17.0' ">net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
