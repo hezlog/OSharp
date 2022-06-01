@@ -12,6 +12,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Lazy.Captcha.Core;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -120,13 +122,14 @@ namespace OSharp.Hosting.Apis.Controllers
             {
                 return new AjaxResult("提交信息验证失败", AjaxResultType.Error);
             }
-            //if (!VerifyCodeService.CheckCode(dto.VerifyCode, dto.VerifyCodeId))
-            //{
-            //    return new AjaxResult("验证码错误，请刷新重试", AjaxResultType.Error);
-            //}
+            ICaptcha captcha = _provider.GetRequiredService<ICaptcha>();
+            if (!captcha.Validate(dto.CaptchaId, dto.Captcha))
+            {
+                return new AjaxResult("验证码错误，请刷新重试", AjaxResultType.Error);
+            }
 
-            dto.UserName = dto.UserName ?? dto.Email;
-            dto.NickName = $"User_{Random.NextLetterAndNumberString(8)}"; //随机用户昵称
+            dto.UserName ??= dto.Email;
+            dto.NickName ??= $"User_{Random.NextLetterAndNumberString(8)}"; //随机用户昵称
             dto.RegisterIp = HttpContext.GetClientIp();
 
             OperationResult<User> result = await IdentityContract.Register(dto);
@@ -178,18 +181,23 @@ namespace OSharp.Hosting.Apis.Controllers
 
                 IUnitOfWork unitOfWork = HttpContext.RequestServices.GetUnitOfWork(true);
                 OperationResult<User> result = await IdentityContract.Login(loginDto);
-#if NET5_0_OR_GREATER
-                await unitOfWork.CommitAsync();
-#else
-                unitOfWork.Commit();
-#endif
                 if (!result.Succeeded)
                 {
+#if NET5_0_OR_GREATER
+                    await unitOfWork.CommitAsync();
+#else
+                    unitOfWork.Commit();
+#endif
                     return result.ToAjaxResult();
                 }
 
                 User user = result.Data;
                 JsonWebToken token = await CreateJwtToken(user, dto.ClientType);
+#if NET5_0_OR_GREATER
+                await unitOfWork.CommitAsync();
+#else
+                unitOfWork.Commit();
+#endif
                 return new AjaxResult("登录成功", AjaxResultType.Success, token);
             }
 
@@ -221,11 +229,6 @@ namespace OSharp.Hosting.Apis.Controllers
 
             IUnitOfWork unitOfWork = HttpContext.RequestServices.GetUnitOfWork(true);
             OperationResult<User> result = await IdentityContract.Login(dto);
-#if NET5_0_OR_GREATER
-                await unitOfWork.CommitAsync();
-#else
-            unitOfWork.Commit();
-#endif
 
             if (!result.Succeeded)
             {
@@ -234,6 +237,11 @@ namespace OSharp.Hosting.Apis.Controllers
 
             User user = result.Data;
             await SignInManager.SignInAsync(user, dto.Remember);
+#if NET5_0_OR_GREATER
+            await unitOfWork.CommitAsync();
+#else
+            unitOfWork.Commit();
+#endif
             return new AjaxResult("登录成功");
         }
 
@@ -460,7 +468,7 @@ namespace OSharp.Hosting.Apis.Controllers
         private async Task<JsonWebToken> CreateJwtToken(User user, RequestClientType clientType = RequestClientType.Browser)
         {
             IServiceProvider provider = HttpContext.RequestServices;
-            IJwtBearerService jwtBearerService = provider.GetService<IJwtBearerService>();
+            IJwtBearerService jwtBearerService = provider.GetRequiredService<IJwtBearerService>();
             JsonWebToken token = await jwtBearerService.CreateToken(user.Id.ToString(), user.UserName, clientType);
 
             return token;
@@ -469,14 +477,14 @@ namespace OSharp.Hosting.Apis.Controllers
         private async Task<JsonWebToken> CreateJwtToken(string refreshToken)
         {
             IServiceProvider provider = HttpContext.RequestServices;
-            IJwtBearerService jwtBearerService = provider.GetService<IJwtBearerService>();
+            IJwtBearerService jwtBearerService = provider.GetRequiredService<IJwtBearerService>();
             JsonWebToken token = await jwtBearerService.RefreshToken(refreshToken);
             return token;
         }
 
         private async Task SendMailAsync(string email, string subject, string body)
         {
-            IEmailSender sender = HttpContext.RequestServices.GetService<IEmailSender>();
+            IEmailSender sender = HttpContext.RequestServices.GetRequiredService<IEmailSender>();
             await sender.SendEmailAsync(email, subject, body);
         }
 
